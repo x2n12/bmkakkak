@@ -1,76 +1,23 @@
-getgenv().speed_owo = 100; -- Choose your fly speed
-getgenv().fly = true; -- Set to false to only gain walk speed
+-- Create a new ImageLabel
+local imageLabel = Instance.new("ImageLabel")
+imageLabel.Size = UDim2.new(0, 200, 0, 200) -- Set the size of the ImageLabel
+imageLabel.Position = UDim2.new(0.5, -100, 0.5, -100) -- Set the position
+imageLabel.AnchorPoint = Vector2.new(0.5, 0.5) -- Set the anchor point to the center
+imageLabel.BackgroundTransparency = 1 -- Make the background transparent
 
-function spoof(seso, value)
-    spawn(function ()
-        local gmt = getrawmetatable(game);
-        setreadonly(gmt, false);
-        local oldindex = gmt.__index;
-        gmt.__index = newcclosure(function (self,b)
-            if b == seso then
-                return value;
-            end
-        return oldindex(self, b);
-    end)
-    setreadonly(gmt, true);
-end)
+-- Set the image URL or AssetId
+local imageUrl = "rbxassetid://1234567890" -- Replace with your image AssetId or URL
+imageLabel.Image = imageUrl
+
+-- Parent the ImageLabel to the player's PlayerGui
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+imageLabel.Parent = playerGui
+
+-- Function to handle when the image is clicked (optional)
+local function onImageClick()
+    print("Image clicked!")
 end
 
-
-function killkick()
-    local mt = getrawmetatable(game);
-    local old = mt.__namecall;
-    setreadonly(mt, false);
-    mt.__namecall = function (self, ...)
-        local method = getnamecallmethod()
-        if self == game.Players.LocalPlayer and method == "Kick" then
-            return;
-        end
-        return old(self, ...);
-    end;
-    setreadonly(mt, true);
-end
-
-spoof("WalkSpeed", 16);
-spoof("JumpPower", 50);
-killkick()
-
-getgenv().grifis = game:GetService("UserInputService");
-
-function alert(message)
-    game.StarterGui:SetCore("SendNotification", {
-        Title=message,
-        Text="By Loja and Takaso", 
-        Icon="",
-        Duration=3;
-    });
-end
-
-function volo(bool, state, speed, jump, gravity)
-    spawn(function ()
-        local player = game:GetService("Players").LocalPlayer.Character;
-        if fly == true then -- Don't ask why I'm checking if fly equals to true twice
-            player.Humanoid:SetStateEnabled("GettingUp", bool);
-            player.Humanoid:ChangeState(state)
-        end
-        player.Humanoid.WalkSpeed = speed;
-        if fly == true then
-            player.Humanoid.JumpPower = jump;
-            game.Workspace.Gravity = gravity;
-        end
-    end)
-end
-
-function main()
-    grifis.InputBegan:Connect(function(tastino)
-        if tastino.KeyCode == Enum.KeyCode.P then
-            alert("You feel wings spreading on your back.");
-            volo(false, "Swimming", speed_owo, 0, 0);
-        elseif tastino.KeyCode == Enum.KeyCode.L then
-            alert("It's time to accomplish your dream.");
-            volo(true, "Walking", 16, 50, 192);
-        end
-    end)
-end
-
-main();
+-- Connect the click event to the function
+imageLabel.MouseButton1Click:Connect(onImageClick)
